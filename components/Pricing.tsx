@@ -46,6 +46,7 @@ export default function Pricing() {
 
   return (
     <section
+      id="precios"
       ref={ref}
       className="py-20 px-4 bg-gradient-to-b from-guitar-dark to-guitar-black"
     >

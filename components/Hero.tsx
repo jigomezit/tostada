@@ -7,7 +7,7 @@ export default function Hero() {
   const [isHovered, setIsHovered] = useState(false);
 
   return (
-    <section className="min-h-screen flex items-center justify-center relative overflow-hidden">
+    <section id="inicio" className="min-h-screen flex items-center justify-center relative overflow-hidden">
       {/* Fondo con gradiente tipo guitarra */}
       <div className="absolute inset-0 bg-gradient-to-br from-guitar-black via-guitar-dark to-guitar-medium"></div>
       
@@ -24,7 +24,7 @@ export default function Hero() {
           transition={{ duration: 1, ease: "easeOut" }}
           className="text-6xl md:text-8xl font-bold mb-8 text-guitar-cream"
         >
-          Soy Músico
+          Jonathan
         </motion.h1>
         
         <motion.p

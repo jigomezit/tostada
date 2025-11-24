@@ -10,6 +10,7 @@ export default function About() {
 
   return (
     <section
+      id="sobre-mi"
       ref={ref}
       className="py-20 px-4 bg-gradient-to-b from-guitar-black to-guitar-dark"
     >
