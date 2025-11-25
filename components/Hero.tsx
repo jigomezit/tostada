@@ -1,10 +1,58 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 export default function Hero() {
   const [isHovered, setIsHovered] = useState(false);
+  const [displayedText, setDisplayedText] = useState("");
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [charIndex, setCharIndex] = useState(0);
+  
+  const fullText = "Jonathan";
+  const typingSpeed = 100; // velocidad de escritura en ms
+  const deletingSpeed = 50; // velocidad de borrado en ms
+  const pauseTime = 2000; // tiempo de pausa después de escribir completo
+
+  // Configuración de notas musicales
+  const musicalNotes = [
+    { emoji: "♪", top: "10%", duration: 8, delay: 0, size: "text-2xl" },
+    { emoji: "♫", top: "25%", duration: 10, delay: 1, size: "text-3xl" },
+    { emoji: "♬", top: "40%", duration: 12, delay: 2, size: "text-2xl" },
+    { emoji: "♪", top: "55%", duration: 9, delay: 0.5, size: "text-xl" },
+    { emoji: "♫", top: "70%", duration: 11, delay: 1.5, size: "text-2xl" },
+    { emoji: "♬", top: "15%", duration: 13, delay: 2.5, size: "text-xl" },
+    { emoji: "♪", top: "80%", duration: 9.5, delay: 0.8, size: "text-3xl" },
+    { emoji: "♫", top: "35%", duration: 10.5, delay: 1.2, size: "text-xl" },
+  ];
+
+  useEffect(() => {
+    let timeout: NodeJS.Timeout;
+
+    if (!isDeleting && charIndex < fullText.length) {
+      // Escribiendo
+      timeout = setTimeout(() => {
+        setDisplayedText(fullText.substring(0, charIndex + 1));
+        setCharIndex(charIndex + 1);
+      }, typingSpeed);
+    } else if (!isDeleting && charIndex === fullText.length) {
+      // Pausa después de escribir completo
+      timeout = setTimeout(() => {
+        setIsDeleting(true);
+      }, pauseTime);
+    } else if (isDeleting && charIndex > 0) {
+      // Borrando
+      timeout = setTimeout(() => {
+        setDisplayedText(fullText.substring(0, charIndex - 1));
+        setCharIndex(charIndex - 1);
+      }, deletingSpeed);
+    } else if (isDeleting && charIndex === 0) {
+      // Reiniciar ciclo
+      setIsDeleting(false);
+    }
+
+    return () => clearTimeout(timeout);
+  }, [charIndex, isDeleting, fullText]);
 
   return (
     <section id="inicio" className="min-h-screen flex items-center justify-center relative overflow-hidden">
@@ -17,6 +65,30 @@ export default function Hero() {
         <div className="absolute bottom-20 right-10 w-96 h-96 border-2 border-guitar-gold rounded-full"></div>
       </div>
 
+      {/* Notas musicales animadas */}
+      <div className="absolute inset-0 z-0 pointer-events-none">
+        {musicalNotes.map((note, index) => (
+          <motion.div
+            key={index}
+            className={`absolute ${note.size} text-guitar-gold/30`}
+            style={{
+              top: note.top,
+              willChange: "transform",
+            }}
+            initial={{ x: "100vw" }}
+            animate={{ x: "-100px" }}
+            transition={{
+              duration: note.duration,
+              delay: note.delay,
+              repeat: Infinity,
+              ease: "linear",
+            }}
+          >
+            {note.emoji}
+          </motion.div>
+        ))}
+      </div>
+
       <div className="relative z-10 text-center px-4">
         <motion.h1
           initial={{ opacity: 0, y: -50 }}
@@ -24,7 +96,8 @@ export default function Hero() {
           transition={{ duration: 1, ease: "easeOut" }}
           className="text-6xl md:text-8xl font-bold mb-8 text-guitar-cream"
         >
-          Jonathan
+          {displayedText}
+          <span className="animate-pulse">|</span>
         </motion.h1>
         
         <motion.p
